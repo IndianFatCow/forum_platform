@@ -1,0 +1,199 @@
+
+/* 页面主体容器样式 */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+/* 整体容器 */
+.profile-container {
+    width: 800px;
+    margin: 20px auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* 顶部背景部分 */
+.profile-cover {
+    background-color: #a6a6a6;
+    height: 120px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.upload-cover-btn {
+    background-color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.upload-cover-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.ip-location {
+    color: #ffffff;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* 头像和信息部分 */
+.profile {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ffffff;
+    margin-right: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nickname {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.tagline {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 8px;
+}
+
+.industry {
+    font-size: 14px;
+    color: #333333;
+    margin-bottom: 16px;
+}
+
+.edit-profile-btn {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: auto;
+}
+
+.edit-profile-btn:hover {
+    background-color: #0056b3;
+}
+
+/* 导航栏样式 */
+.navigation {
+    display: flex;
+    gap: 15px;
+    justify-content: center; /* 居中 */
+    margin-bottom: 20px;
+}
+.navigation a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.navigation a.active {
+    background-color: #007bff;
+    color: white;
+}
+.navigation a:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* 内容区域样式 */
+.content-section {
+    display: none;
+    text-align: center; /* 内容居中 */
+}
+.content-section.active {
+    display: block;
+}
+.question-item, .article-item, .favorite-item, .following-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left; /* 内容左对齐，避免段落文字过于靠中 */
+    max-width: 600px;
+    margin: 10px auto; /* 内容区域居中 */
+}
+.question-item h4, .article-item h4, .favorite-item h4, .following-item h4 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+.question-item button, .article-item button, .favorite-item button, .following-item button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .profile-container {
+        width: 100%; /* 宽度自适应 */
+        margin: 10px auto;
+    }
+
+    .profile {
+        flex-direction: column; /* 小屏幕时垂直排列 */
+    }
+
+    .profile-img {
+        margin-right: 0; /* 去掉右边距 */
+        margin-bottom: 10px; /* 增加下边距 */
+    }
+
+    .navigation {
+        flex-wrap: wrap; /* 导航栏自动换行 */
+        gap: 10px;
+        justify-content: center; /* 保持居中 */
+    }
+
+    .content-section {
+        padding: 0 10px; /* 内容区域左右间距 */
+    }
+}

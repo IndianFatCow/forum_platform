@@ -1,0 +1,104 @@
+/* 顶部栏样式 */
+.header {
+    width: 98%;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+/* Algohub logo 样式 */
+.header .logo-button {
+    font-family: 'Segoe Script', sans-serif;
+    color: #4050ff;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* 顶部栏导航按钮样式 */
+.header button {
+    padding: 10px 15px;
+    background-color: transparent;
+    border: none;
+    color: #6d6c74;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.header button:hover {
+    color: #007bff;
+}
+/* 搜索输入框样式 */
+.header input[type="text"] {
+    padding: 5px; /* 设置输入框内的文字和边框之间的间距，提升输入体验 */
+    margin-right: 10px; /* 设置输入框与右侧按钮之间的间距，保持布局美观 */
+    border-radius: 5px; /* 设置圆角边框，让输入框的外观更柔和 */
+    border: 1px solid #ddd; /* 定义输入框的边框颜色为浅灰色，显得简洁且不抢眼 */
+}
+
+/* 搜索栏容器样式 */
+.search-bar {
+    display: flex; /* 使用 Flexbox 布局，方便对齐子元素 */
+    justify-content: center; /* 水平居中对齐搜索栏中的元素 */
+    margin-bottom: 5px; /* 搜索栏与下方内容的间距，避免视觉拥挤 */
+}
+
+/* 搜索输入框样式（在搜索栏中的定义，与 .header 中保持一致） */
+.search-bar input[type="text"] {
+    padding: 5px; /* 输入框的内边距，控制文字的舒适性 */
+    border-radius: 5px; /* 输入框的圆角边框，增强视觉柔和度 */
+    border: 1px solid #ddd; /* 定义边框为浅灰色，整体风格统一 */
+    margin-right: 10px; /* 输入框与搜索按钮之间的间距 */
+}
+
+/* 搜索按钮样式 */
+.search-bar button {
+    padding: 5px 10px; /* 设置按钮的内边距，确保点击区域足够大 */
+    background-color: #007bff; /* 按钮背景色为蓝色，提升视觉重点 */
+    color: white; /* 按钮文字颜色为白色，与背景色对比强烈 */
+    border: none; /* 去除按钮的默认边框，使样式更简洁 */
+    border-radius: 5px; /* 按钮的圆角边框，保持与输入框的一致性 */
+    cursor: pointer; /* 鼠标悬停时显示为手型，表示可以点击 */
+}
+
+/* 搜索按钮悬浮状态样式 */
+.search-bar button:hover {
+    background-color: #0056b3; /* 鼠标悬浮时背景色变为深蓝，突出交互效果 */
+}
+
+
+
+/* 头像、下拉菜单样式 */
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    width: 150px;
+    z-index: 1;
+}
+.dropdown-menu a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+}
+.dropdown-menu a:hover {
+    background-color: #f2f2f2;
+}
