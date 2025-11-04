@@ -12,7 +12,7 @@ const loginRequest = axios.create({
 });
 // 注册拦截器
 export const userRegisterService = (registerData:any)=>{
-    return request.post('/user',registerData)//请求路径接口
+    return request.post('http://localhost:8080/api/auth/register',registerData)//请求路径接口
 }
 
 //提供调用登录接口的函数

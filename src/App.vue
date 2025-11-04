@@ -18,7 +18,7 @@ const userStore = useUserInfoStore();
 </script>
 
 <template>
-  <navigate v-if="userStore.isAdmin" />
+  <navigate  />
   <router-view></router-view>
 </template>
 

@@ -113,19 +113,20 @@ const login = async () =>{
 
     AuthStore.$state.user = registerData.value;
     
-    let restoken = await userLoginService(AuthStore.getAuthHeader(),registerData.value.username,registerData.value.password);
+    // let restoken = await userLoginService(AuthStore.getAuthHeader(),registerData.value.username,registerData.value.password);
     // console.log(AuthStore.$state)
     // console.log(restoken.data)
     //由于登录请求用到是新构造的request，返回对象中data.data是token
-    token.setToken(restoken.data.data)//根据后台设置token
+    // token.setToken(restoken.data.data)//根据后台设置token
 
-    let res = await userInfoService(registerData.value.username)//获取用户信息;
-    
+    // let res = await userInfoService(registerData.value.username)//获取用户信息;
+    let res = await userLoginService(AuthStore.getAuthHeader(),registerData.value.username,registerData.value.password);//获取用户信息;
+    console.log(res)
     UserInfoStore.setUserInfo(res.data)//设置用户信息
     console.log(UserInfoStore.userinfo)
-    UserInfoStore.setState({isLogin: true, isAdmin: (res.data.status == 'admin' )?true:false})//设置登录状态
+    UserInfoStore.setState({isLogin: true, isAdmin: (res.data.role == 'ADMIN' )?true:false})//设置登录状态
 
-    ElMessage.success(restoken.msg?restoken.msg:"登录成功")
+    ElMessage.success("登录成功")
 
 
     //跳转到首页
