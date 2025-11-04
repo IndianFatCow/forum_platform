@@ -11,7 +11,7 @@ export interface userInfo {
   /** 手机号（数据库varchar(255)，可选） */
   phone?: string;
   /** 头像URL（数据库varchar(255)，可选，与avatar字段可能存在冗余，需确认业务逻辑） */
-  avatarUrl?: string;
+  avatar?: string;
   /** 用户角色（数据库varchar(255)，可选，如：admin/normal/user） */
   role?: string;
   /** 用户积分（数据库int类型，可选） */

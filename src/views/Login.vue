@@ -113,7 +113,7 @@ const login = async () =>{
 
     AuthStore.$state.user = registerData.value;
     
-    let restoken = await userLoginService(AuthStore.getAuthHeader());
+    let restoken = await userLoginService(AuthStore.getAuthHeader(),registerData.value.username,registerData.value.password);
     // console.log(AuthStore.$state)
     // console.log(restoken.data)
     //由于登录请求用到是新构造的request，返回对象中data.data是token

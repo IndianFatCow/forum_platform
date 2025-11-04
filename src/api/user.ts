@@ -7,7 +7,8 @@ import { ElMessage } from 'element-plus';
 
 // 创建一个避免拦截器的Axios实例用于登录
 const loginRequest = axios.create({
-  baseURL: '/v1', // 根据实际情况调整
+//   baseURL: '/v1', // 根据实际情况调整
+    baseURL: '',
 });
 // 注册拦截器
 export const userRegisterService = (registerData:any)=>{
@@ -15,8 +16,9 @@ export const userRegisterService = (registerData:any)=>{
 }
 
 //提供调用登录接口的函数
-export const userLoginService = (Auth: any)=>{
-    return loginRequest.post('/api/auth/login', {}, {
+export const userLoginService = (Auth: any,username:string,password:string)=>{
+    return loginRequest.post('http://localhost:8080/api/auth/login', {    username: username,
+        password: password}, {
         headers: {
             'Authorization': Auth // 设置正确的Authorization头
         }
@@ -27,7 +29,7 @@ export const userLoginService = (Auth: any)=>{
     }).catch(error => {
         // 处理登录失败的逻辑
         // console.log("登录失败", error.response.data.message);
-        ElMessage.error(error.response.data.message);
+        ElMessage.error(error.response.data.success);
     });
 }
 //提供调用退出登录接口的函数

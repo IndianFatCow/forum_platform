@@ -14,23 +14,9 @@ const timeout = 3000; //设置请求超时时间
 const instance = axios.create({
     baseURL: baseURL,
     timeout: timeout,
-      // 使用 json-bigint 解析响应数据
-    transformResponse: [
-    (data) => {
-      return JSONBig.parse(data); // 自动将大整数转为字符串
-    }
-  ],
-    transformRequest: [
-    (data,headers) => {
-    // 如果是 FormData，就直接返回，不做 stringify
-      if (data instanceof File) {
-        // 注意：有些老浏览器需要手动 delete headers['Content-Type']
-        // delete headers['Content-Type']
-        return data
+    headers: {
+        'Content-Type': 'application/json' // ← 这样就全局设置了
       }
-        return JSONBig({ useNativeBigInt: true }).stringify(data); // 自动将大整数转为字符串
-    }
-  ]
   });
 //导入router
 import router from '@/router';
@@ -38,7 +24,7 @@ import router from '@/router';
 //添加响应拦截器
 instance.interceptors.response.use(//返回数据后触发
     result=>{
-        if(result.status === 200){
+        if(result.data.success === true){
             return result.data;
         }
         // alert(result.msg?result.msg:'服务异常'+result.msg);
@@ -49,7 +35,7 @@ instance.interceptors.response.use(//返回数据后触发
     err=>{
         console.log('请求错误:', err);
         //判断错误的状态码
-        if(err.response.status === 401){
+        if(err.response.success === false){
             //
             const authStore = useAuthStore()
             authStore.clearCredentials() // 清除 Basic Auth 
@@ -78,10 +64,12 @@ instance.interceptors.request.use(//请求前触发
         //获取token
         // const authStore = useAuthStore()
         // const authHeader = authStore.getAuthHeader(); // 调用 getAuthHeader 方法
+        console.log('请求拦截器触发');
         const tokenStore = useTokenStore()
         const token = tokenStore.getToken();
         const authHeader = token ? `Bearer ${token}` : null;
         // console.log('authHeader:', authHeader);
+        console.log(instance.defaults.headers);
         if (authHeader) {
             config.headers.Authorization = authHeader; // 设置请求头
         }

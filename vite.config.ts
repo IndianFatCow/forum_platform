@@ -3,7 +3,6 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
-
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -21,10 +20,10 @@ export default defineConfig({
     port: 5174,//前端端口
     proxy: {
       '/v1': {
-        target: 'https://114.55.235.23:8443/v1',//云服务器
+        // target: 'https://114.55.235.23:8443/v1',//云服务器
         // target: 'https://192.168.1.166:8443/v1', //局域网
         // target: 'https://127.0.0.1:8443/v1', //本地
-        // target: 'http://localhost:8080', 
+        target: 'http://localhost:8080', 
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/v1/, ''),
         secure: false,
