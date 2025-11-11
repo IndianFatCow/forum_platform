@@ -1,167 +1,254 @@
 <template>
-    <div class="follow-list">
+  <div class="user-list-container">
+    <!-- 搜索栏 -->
+    <div class="search-header">
+      <el-input
+        v-model="searchKeyword"
+        placeholder="搜索用户..."
+        clearable
+        @clear="handleSearch"
+        @keyup.enter="handleSearch"
+        class="search-input"
+      >
+        <template #prefix>
+          <el-icon><Search /></el-icon>
+        </template>
+      </el-input>
+      <el-button type="primary" @click="handleSearch">搜索</el-button>
+    </div>
+
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-container">
+      <el-skeleton :rows="5" animated />
+    </div>
+
+    <!-- 用户列表 -->
+    <div v-else-if="userListStore.userList.length > 0" class="user-list">
       <el-card
-        v-for="user in users"
-        :key="user.username"
+        v-for="user in userListStore.userList"
+        :key="user.id"
         class="user-card"
+        shadow="hover"
       >
         <div class="user-info">
-          <el-avatar
-            :src="user.avatar"
-            class="avatar"
-            @click="goToProfile(user.username)"
-          />
-          <div class="meta">
-            <div class="name" @click="goToProfile(user.username)">{{ user.nickname }}</div>
-            <!-- <div class="bio">{{ truncate(user.bio, 20) }}</div> -->
-             <div class="bio">{{ user.bio }}</div>
-            <!-- <div class="followers">{{ user.followers }} 粉丝</div> -->
+          <el-avatar :size="60" :src="user.avatar || '/default-avatar.png'" />
+          <div class="user-details">
+            <div class="user-name">{{ user.username || '未命名用户' }}</div>
+            <div class="user-meta">
+              <span v-if="user.email" class="meta-item">
+                <el-icon><Message /></el-icon>
+                {{ user.email }}
+              </span>
+              <span v-if="user.phone" class="meta-item">
+                <el-icon><Phone /></el-icon>
+                {{ user.phone }}
+              </span>
+            </div>
           </div>
-          <el-button
-            class="follow-btn"
-            size="small"
-            :type="user.subscribed ? 'info' : 'primary'"
-            @click="toggleSubscribe(user)"
-            @mouseenter="user.hovering = true"
-            @mouseleave="user.hovering = false"
-          >
-            {{ user.subscribed ? (user.hovering ? '取消关注' : '已关注') : '关注他' }}
-          </el-button>
+          <div class="user-actions">
+            <el-button type="primary" text @click="viewUserDetail(user.id)">
+              查看详情
+            </el-button>
+            <el-button type="danger" text @click="handleDeleteUser(user.id)">
+              删除
+            </el-button>
+          </div>
         </div>
       </el-card>
+
+      <!-- 分页 -->
+      <div class="pagination">
+        <el-text type="info">共 {{ userListStore.total }} 个用户</el-text>
+      </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, onMounted,watch } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { ElMessage } from 'element-plus'; 
-  import {getSubscribeList,subscribeUser,unsubscribeUser} from '@/api/subscribe';
-  import { chageAvatarUrl,userInfoService} from '@/api/user';
-  
-  const router = useRouter();
-  const users = ref<any[]>([]);
-  const props = defineProps<{
-  users: any[]
-}>(); 
 
-// 当 props.users 变化（或首次挂载）时，批量拉取完整信息
-watch(
-  () => props.users,//监听props.users
-  async (newUsers) => {//newuser为变更后的新值
-    if (!newUsers) {
-      users.value = []
-      return
-    }
+    <!-- 空状态 -->
+    <el-empty
+      v-else
+      :description="searchKeyword ? `未找到「${searchKeyword}」相关用户` : '暂无用户数据'"
+    >
+      <el-button type="primary" @click="handleSearch">刷新</el-button>
+    </el-empty>
+  </div>
+</template>
 
-    // 用 Promise.all 把所有网络请求并行起来，等都返回后一次性写回 users.value，避免部分加载造成界面闪烁。
-    const fullUsers = await Promise.all(
-      newUsers.map(async u => {
-        try {
-          const res = await userInfoService(u.username)
-          console.log(res.data) 
-          const data = res.data   // ← 这里就是你要的完整对象，包含昵称、subscribed 等
-          // 加上 avatar、hovering 两个字段
-          return {// 返回一个对象，包含所有字段
-            ...data,
-            avatar: chageAvatarUrl(data.avatar),
-            hovering: false
-          }
-        } catch (err) {
-          console.error(`加载用户 ${u.username} 信息失败`, err)
-          return {
-            username: u.username,
-            avatar: '',
-            hovering: false,
-            // 如果还想保留父组件的其他属性，可以做 ...u
-            ...u
-          }
-        }
-      })
-    )
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { Search, Message, Phone } from '@element-plus/icons-vue'
+import { useUserListStore } from '@/stores/userList'
+import { userListService } from '@/api/user'
+import type { userInfo } from '@/lib/types'
 
-    users.value = fullUsers
-  },
-  { immediate: true }
-)
+const route = useRoute()
+const router = useRouter()
+const userListStore = useUserListStore()
 
-// 截断文本工具
-const truncate = (text: string, maxLength: number) =>
-  text.length > maxLength ? text.slice(0, maxLength) + '...' : text
+const searchKeyword = ref<string>('')
+const loading = ref<boolean>(false)
 
-// 跳转到用户主页
-const goToProfile = (username: string) => {
-  router.push(`/profile/${username}`)
-}
-
-// 切换关注状态
-const toggleSubscribe = async (user: any) => {
+// 获取用户列表
+const fetchUserList = async (keyword?: string) => {
+  loading.value = true
   try {
-    if (user.subscribed) {
-      await unsubscribeUser(user.username)
-      user.subscribed = false
-      ElMessage.success('已取消关注')
+    const res = await userListService(keyword)
+    
+    console.log('API 返回数据:', res) // 🔍 调试日志
+    
+    // 接口直接返回数组，不需要判断 code
+    if (Array.isArray(res)) {
+      userListStore.setUserList(res as userInfo[])
+    } else if (res?.success === true && Array.isArray(res.data)) {
+      // 兼容包装格式 { success: true, data: [] }
+      userListStore.setUserList(res.data as userInfo[])
     } else {
-      await subscribeUser(user.username)
-      user.subscribed = true
-      ElMessage.success('关注成功')
+      console.warn('无法识别的响应格式:', res)
+      ElMessage.warning('获取用户列表失败')
+      userListStore.clearUserList()
     }
-  } catch (err: any) {
-    ElMessage.error(err.response?.data?.message || '操作失败')
+  } catch (error: any) {
+    console.error('获取用户列表失败:', error)
+    // 错误提示已在拦截器中处理，这里只需清空列表
+    userListStore.clearUserList()
+  } finally {
+    loading.value = false
   }
 }
+
+// 处理搜索
+const handleSearch = () => {
+  // 更新路由参数（保持 URL 同步）
+  router.push({
+    path: '/users',
+    query: searchKeyword.value ? { search: searchKeyword.value } : {}
+  })
+  
+  // 执行搜索
+  fetchUserList(searchKeyword.value || undefined)
+}
+
+// 查看用户详情
+const viewUserDetail = (userId: number) => {
+  router.push(`/user/${userId}`)
+}
+
+// 删除用户
+const handleDeleteUser = async (userId: number) => {
+  try {
+    await ElMessageBox.confirm('确定要删除该用户吗?', '警告', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    
+    // 从 store 中删除（实际项目需要调用删除 API）
+    // 🔧 使用 id 而不是 userId
+    userListStore.removeUser(userId)
+    ElMessage.success('删除成功')
+  } catch {
+    // 用户取消操作
+  }
+}
+
+// 初始化：从路由获取搜索参数
+onMounted(() => {
+  const searchParam = route.query.search as string
+  if (searchParam) {
+    searchKeyword.value = decodeURIComponent(searchParam)
+  }
+  
+  // 加载用户列表
+  fetchUserList(searchKeyword.value || undefined)
+})
 </script>
-  
-  <style scoped>
-  .follow-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+
+<style scoped lang="scss">
+.user-list-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .search-input {
+    flex: 1;
   }
-  
-  .user-card {
-    display: flex;
-    align-items: center;
-    padding: 12px;
+}
+
+.loading-container {
+  padding: 20px;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-card {
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
   }
-  
+
   .user-info {
     display: flex;
     align-items: center;
-    width: 100%;
+    gap: 16px;
   }
-  
-  .avatar {
-    cursor: pointer;
-    margin-right: 16px;
+
+  .user-details {
+    flex: 1;
+
+    .user-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #303133;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 14px;
+      color: #909399;
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
   }
-  
-  .meta {
-    flex-grow: 1;
+
+  .user-actions {
+    display: flex;
+    gap: 8px;
   }
-  
-  .name {
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 16px;
+}
+
+.pagination {
+  margin-top: 24px;
+  text-align: center;
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .user-card .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .user-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
   }
-  
-  .bio {
-    color: #666;
-    font-size: 14px;
-    margin-top: 4px;
-  }
-  
-  .followers {
-    color: #999;
-    font-size: 12px;
-    margin-top: 4px;
-  }
-  
-  .follow-btn {
-    min-width: 80px;
-    margin-left: auto;
-    hover:right;
-  }
-  </style>
-  
+}
+</style>

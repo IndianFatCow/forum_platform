@@ -1,6 +1,7 @@
 export interface userInfo {
     ip_address?: string; // IP地址（数据库varchar(255)，可选，新增字段）
   /** 用户ID（数据库bigint类型，非空） */
+  userId: number;
   id: number;
   /** 用户名（数据库varchar(255)，非空） */
   username: string;
@@ -9,11 +10,11 @@ export interface userInfo {
   /** 邮箱（数据库varchar(255)，可选） */
   email: string;
   /** 手机号（数据库varchar(255)，可选） */
-  phone?: string;
+  phone: string;
   /** 头像URL（数据库varchar(255)，可选，与avatar字段可能存在冗余，需确认业务逻辑） */
-  avatar?: string;
+  avatar: string;
   /** 用户角色（数据库varchar(255)，可选，如：admin/normal/user） */
-  role?: string;
+  role: string;
   /** 用户积分（数据库int类型，可选） */
   points?: number;
   /** 用户等级（数据库int类型，可选） */

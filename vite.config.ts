@@ -26,6 +26,11 @@ export default defineConfig({
         target: 'http://localhost:8080', 
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/v1/, ''),
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('🔄 正在代理请求:', req.url)
+          })
+        },
         secure: false,
       }
     }

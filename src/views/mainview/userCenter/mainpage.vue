@@ -20,7 +20,7 @@ import {useUserInfoStore} from '@/stores/userInfo'
 const userInfo = useUserInfoStore()
 const getUserInfo = async ()=>{
     console.log(userInfo.userinfo.username);
-    let result = await userInfoService(userInfo.userinfo.username);
+    let result = await userInfoService(userInfo.userinfo.userId);
     console.log(result);
     userInfo.userinfo.value = result.data;
     // console.log(authStore.userInfo.username);
@@ -105,7 +105,7 @@ const handleCommand = (command) => {
         <el-container>
             <!-- 头部区域 -->
             <el-header>
-                <div><span class="el-header__title">Algohub：</span><strong>{{userInfo.nickname}}</strong></div>
+                <div><span class="el-header__title">南邮论坛：</span><strong>{{userInfo.nickname}}</strong></div>
                 <miniCenter/>
             </el-header>
             <!-- 中间区域 -->
@@ -116,7 +116,7 @@ const handleCommand = (command) => {
                 <router-view></router-view>
             </el-main>
             <!-- 底部区域 -->
-            <el-footer>Algohub——你的一站式算法学习平台</el-footer>
+            <el-footer>南邮论坛——最大的BBS平台</el-footer>
         </el-container>
     </el-container>
 </template>

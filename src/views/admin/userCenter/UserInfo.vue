@@ -11,10 +11,7 @@ const userInfo = reactive({
   // 新增字段默认值
   createdAt: userInfoStore.userinfo.createdAt || '',
   phone: userInfoStore.userinfo.phone || '',
-  bio: userInfoStore.userinfo.bio || '',   // 个人简介：可以写一段较长的文字
-  company: userInfoStore.userinfo.company || '',
-  location: userInfoStore.userinfo.location || '',
-  profile_url: userInfoStore.userinfo.profile_url || ''
+
 })
 
 // 校验规则
@@ -31,19 +28,14 @@ const rules = {
     { required: false, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^\d{6,15}$/, message: '手机号格式不正确', trigger: 'blur' }
   ],
-  bio: [
-    { required: false, message: '请输入个人简介', trigger: 'blur' },
-    { max: 200, message: '个人简介不能超过200字', trigger: 'blur' }
-  ],
-  profile_url: [
-    { type: 'url', message: '个人主页 URL 格式不正确', trigger: 'blur' }
-  ]
+
 }
 
 // 修改个人信息
 const updateUserInfo = async () => {
   try {
     const result = await userInfoUpdateService(userInfo.username, userInfo)
+    console.log('result', result)
     ElMessage.success(result.data?.message || '修改成功')
     // 将修改后的信息同步回 pinia
     userInfoStore.setUserInfo(userInfo)
@@ -83,21 +75,8 @@ const updateUserInfo = async () => {
             <el-input v-model="userInfo.phone" />
           </el-form-item>
 
-          <el-form-item label="个人简介" prop="bio">
-            <el-input type="textarea" v-model="userInfo.bio" placeholder="一个长篇的个人简介" rows="4" />
-          </el-form-item>
 
-          <el-form-item label="公司">
-            <el-input v-model="userInfo.company" />
-          </el-form-item>
 
-          <el-form-item label="所在城市">
-            <el-input v-model="userInfo.location" />
-          </el-form-item>
-
-          <el-form-item label="个人主页" prop="profile_url">
-            <el-input v-model="userInfo.profile_url" placeholder="https://example.com" />
-          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" @click="updateUserInfo">提交修改</el-button>

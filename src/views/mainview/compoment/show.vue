@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 const goToForum = () => {
-  window.location.href = "/forum-home";
+  window.location.href = "/home";
 };
 </script>
 

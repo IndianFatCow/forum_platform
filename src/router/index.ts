@@ -8,7 +8,9 @@ import LoginVue from '@/views/Login.vue'
 //admin页面的子页面
 import admin from '@/views/admin/adminpage.vue'
 import ArticleManagevue from '@/views/admin/contentAdmin/show.vue'//文章管理
-import userManage from '@/views/admin/contentAdmin/show.vue'//用户管理
+// import userManage from '@/views/admin/contentAdmin/show.vue'//用户管理
+import userManage from '@/views/mainview/userProfile/userList.vue'
+
 
 //uesr页面和子页面
 import showVue from '@/views/mainview/compoment/show.vue'//项目展示
@@ -29,10 +31,10 @@ import userResetpasswordvue from '@/views/admin/userCenter/UserResetPassword.vue
 //社区页面
 import home from '@/views/mainview/Blog/home.vue'//社区首页
 import blogDetail from '@/views/mainview/Blog/components/BlogDetial.vue'//社区详情
-
+import userList from '@/views/mainview/userProfile/userList.vue'
+import boards from '@/views/mainview/Blog/boards.vue'
 
 import setupAllRouterGuard from './listen'//监听路由
-import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs'
 //定义路由关系
 const routes = [
     { path: '/login', component: LoginVue },    
@@ -52,18 +54,15 @@ const routes = [
         children://配置子路由
         [       
                 {path: '/show', component: showVue},
+                {path: '/boards', component: boards},
                 {path: '/home', component: home},
                 { path: '/blogDetail/:id', component: blogDetail },
-                // {path: '/question-bank', component: questionBank ,
-                // // 将查询参数 q 作为 props.searchQuery 传入
-                // // @ts-ignore
-                // props: route => ({ searchQuery: route.query.q || '' })
-                // },
                 // {path: '/questionDetail/:id', component: questionDetail},
                 // {path: '/profile', component: profile},
                 {path: '/profile/:username', component: profile},
                 {path: '/qa', component: qa},
-                {path: '/visual-algo', component: visualAlgo}      
+                {path: '/visual-algo', component: visualAlgo} ,
+                {path: '/users', component: userList}    
         ]},
     { path: '/usercenter', component: userCenter,
         children://配置子路由

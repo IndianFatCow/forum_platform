@@ -30,7 +30,7 @@ import miniCenter from './userCenter/miniCenter.vue';
 
 
 const searchText = ref('');
-const searchType = ref('problems'); // 默认搜索类型为用户
+const searchType = ref('users'); // 注意这里默认值，但switch里没有处理，建议统一
 const handleSearch = () => {
   if (searchText.value.trim() === '') {
     ElMessage({
@@ -39,16 +39,51 @@ const handleSearch = () => {
     });
     return;
   }
-  // 跳转到搜索结果页面
+  
+  // 跳转到搜索结果页面并刷新
+  const handleNavigation = (path) => {
+    router.push(path).then(() => {
+      // 跳转成功后刷新页面
+      router.go(0); // 等同于window.location.reload()
+    });
+  };
+  
   switch (searchType.value) {
     case 'users':
-      router.push(`/question-bank?searchContent=${searchText.value}`);
+      handleNavigation(`/users?search=${encodeURIComponent(searchText.value)}`);
       break;
     case 'blogs':
-      router.push(`/question-bank?searchContent=${searchText.value}`);
+      handleNavigation(`/blogs?search=${encodeURIComponent(searchText.value)}`);
       break;
+    case 'boards':
+      handleNavigation(`/boards?search=${encodeURIComponent(searchText.value)}`);
+      break;
+
   }
 };
+// const searchType = ref('problems'); // 默认搜索类型为用户
+// const handleSearch = () => {
+//   if (searchText.value.trim() === '') {
+//     ElMessage({
+//       message: '请输入搜索内容',
+//       type: 'warning',
+//     });
+//     return;
+//   }
+  
+//   // 跳转到搜索结果页面
+//   switch (searchType.value) {
+//     case 'users':
+//       router.push(`/users?search=${encodeURIComponent(searchText.value)}`)
+//       break;
+//     case 'blogs':
+//       router.push(`/blogs?search=${encodeURIComponent(searchText.value)}`)
+//       break;
+//     case 'boards':
+//       router.push(`/boards?search=${encodeURIComponent(searchText.value)}`)
+//       break;
+//   }
+// };
 
 </script>
 <template>
@@ -60,7 +95,7 @@ const handleSearch = () => {
           <el-menu-item index="/show">NJUPT</el-menu-item>
           <el-menu-item index="/home">首页</el-menu-item>
           <el-menu-item :index=profilePath>个人主页</el-menu-item>
-          <el-menu-item index="/qa">问答</el-menu-item>
+          <el-menu-item index="/users">用户列表</el-menu-item>
           <!-- <el-menu-item index="/visual-algo">Visual-algo</el-menu-item> -->
         </el-menu>
       </div>
@@ -78,8 +113,8 @@ const handleSearch = () => {
             </span> 
             <el-select v-model="searchType" placeholder="请选择">
               <el-option label="用户" value="users"></el-option>
-              <el-option label="题目" value="problems"></el-option>
-              <el-option label="动态" value="activities"></el-option>
+              <el-option label="板块" value="boards"></el-option>
+              <el-option label="动态" value="blogs"></el-option>
             </el-select>
           </template>
           <template #append>

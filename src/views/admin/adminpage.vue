@@ -19,7 +19,8 @@ import { useUserInfoStore } from '@/stores/userInfo';
 const authStore = useAuthStore();
 const UserInfoStore = useUserInfoStore();
 const getUserInfo = async ()=>{
-    let result = await userInfoService();
+    console.log("adminpage获取用户信息中，当前用户id:",UserInfoStore.userinfo.userId);
+    let result = await userInfoService(UserInfoStore.userinfo.userId);
     // console.log("前台",result);
     UserInfoStore.setUserInfo(result.data)//设置用户信息
     // console.log(authStore.userInfo.username);
@@ -52,7 +53,7 @@ import miniCenter from '../mainview/userCenter/miniCenter.vue';
                     </el-icon>
                     <span>文章管理</span>
                 </el-menu-item >
-                <el-menu-item index="/admin/article/category">
+                <el-menu-item index="/admin/user/manage">
                     <el-icon>
                         <Menu />
                     </el-icon>

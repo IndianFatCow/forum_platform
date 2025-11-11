@@ -5,78 +5,80 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 // import { useNamespace } from 'element-plus';
 
-// 创建一个避免拦截器的Axios实例用于登录
-const loginRequest = axios.create({
+// // 创建一个避免拦截器的Axios实例用于登录
+const userRequest = axios.create({
 //   baseURL: '/v1', // 根据实际情况调整
-    baseURL: '',
+    // baseURL: '',
+    headers: {
+        'Content-Type': 'application/json' ,// ← 这样就全局设置了
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkiLCJ1c2VySWQiOjcsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzYyNDg1MzUyLCJleHAiOjE3NjI1NzE3NTJ9.weCZJpxKdSsKY-6y4EuwAgB5PSvf5Zpx6PPAb8DAVlg'
+      }
 });
+
 // 注册拦截器
 export const userRegisterService = (registerData:any)=>{
-    return request.post('http://localhost:8080/api/auth/register',registerData)//请求路径接口
+    // return request.post('/api/auth/register',registerData)//请求路径接口
+    return request.post('/api/auth/register', registerData);
 }
 
 //提供调用登录接口的函数
-export const userLoginService = (Auth: any,username:string,password:string)=>{
-    return loginRequest.post('http://localhost:8080/api/auth/login', {    username: username,
-        password: password}, {
-        headers: {
-            'Authorization': Auth // 设置正确的Authorization头
-        }
-    }).then(response => {
-        // 处理登录成功后的逻辑
-        // console.log("登录成功", response.data);
-        return response; // 返回登录成功的响应数据
-    }).catch(error => {
-        // 处理登录失败的逻辑
-        // console.log("登录失败", error.response.data.message);
-        ElMessage.error(error.response.data.success);
+export const userLoginService = (username:string,password:string)=>{
+    // return request.post('/api/auth/login', {    username: username,
+    //     password: password}, {
+    //     headers: {
+    //         'Authorization': Auth // 设置正确的Authorization头
+    //     }
+    // }).then(response => {
+    //     // 处理登录成功后的逻辑
+    //     // console.log("登录成功", response.data);
+    //     return response; // 返回登录成功的响应数据
+    // }).catch(error => {
+    //     // 处理登录失败的逻辑
+    //     // console.log("登录失败", error.response.data.message);
+    //     ElMessage.error(error.response.data.success);
+    // });
+    return request.post('/api/auth/login', {
+        username: username,
+        password: password
     });
+    // return userRequest.post('http://localhost:8080/api/auth/login', {
+    //     username: username,
+    //     password: password
+    // });
 }
 //提供调用退出登录接口的函数
 export const userLogoutService = ()=>{
     return request.post('/logout')
 }
 
-//获取用户详细信息
-export const userInfoService = (username:string)=>{
-    return request.get(`/user/${username}`)
-}
-//获取用户列表
-export const userListService = (offset:any,limit:any)=>{
-    return request.get('/user/list',{
-        params:{
-            offset,
-            limit
-        }
-    })
-}
 //修改个人信息
 export const userInfoUpdateService = (username:string,userInfoData:any)=>{
     // console.log("userInfoData",userInfoData)
-   return request.put(`/user/${username}`,userInfoData)
+   return request.put(`/api/users/profile`,userInfoData)
 }
 
 //修改头像
-export const userAvatarUpdateService = (username:string, avatar_url: File) => {
-
-    console.log("avatarFile",avatar_url)
-    return request.put(`/user/${username}`, avatar_url);
+export const userAvatarUpdateService = (username: string, avatar: string) => {
+    return request.put(`/api/users/profile`, {
+        // username: username,
+        avatar: avatar
+        // avatar:"https://picsum.photos/id/1/200/200"
+    });
+    // return request.put(`/api/users/profile`, avatar);
+    // return userRequest.put('localhost:8080/api/users/profile', {
+    //     // username: username,
+    //     avatar: avatar
+    // });
 }
 
-//获取用户头像
-// export const userAvatarService = (username:string)=>{
-//     return request.get(`/user/${username}/avatar`,{
-//         responseType: 'blob' // 设置响应类型为blob
-//     })
-//     // return request.get(`/user/${username}/avatar`)
-// }
+
 //修改密码
 export const userResetPasswordService = (username:string,passwordData:any)=>{
     return request.put(`/user/${username}`,passwordData)
 }
 //搜索用户
 export const SearchUserService = (username:string, offset?:number,limit?:number)=>{
-    return request.get('/user',{
+    return request.get('/api/users/3',{
         params:{
             username,
             offset: offset !== undefined ? offset : 0, // 如果offset未提供，则使用0
@@ -103,3 +105,23 @@ export const  chageAvatarUrl = (avatar:string)=> {
     // }
 }
 // 需要做跨域处理
+
+//获取用户详细信息
+export const userInfoService = (userid:number)=>{
+    return request.get(`/api/users/${userid}`)
+}
+// 获取用户列表
+export const userListService = (keyword?: string) => {
+    console.log("js keyword", keyword);
+
+    const params: { keyword?: string } = {};
+    if (keyword && keyword.trim() !== '') {
+        params.keyword = keyword.trim();
+    }
+    console.log("params", params);
+    return  request.get('/api/search/users', { params ,    headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }});
+
+};

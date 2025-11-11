@@ -39,11 +39,11 @@ const submitForgetPwd = async () => {
 const formref = ref(null)
 //用于注册的数据模型
 const registerData = ref({
-    username: '',
-    password: '',
-    rePassword: '',
-    email: '',
-    status: 'user'
+    username: '123456789',
+    password: '12345678',
+    rePassword: '12345678',
+    email: 'test@email.com',
+    role: 'user'
 })
 const checkPassword =(rule,value,callback) =>{
     if(value=='')callback("请输入确认密码")
@@ -120,12 +120,13 @@ const login = async () =>{
     // token.setToken(restoken.data.data)//根据后台设置token
 
     // let res = await userInfoService(registerData.value.username)//获取用户信息;
-    let res = await userLoginService(AuthStore.getAuthHeader(),registerData.value.username,registerData.value.password);//获取用户信息;
+    let res = await userLoginService(registerData.value.username,registerData.value.password);//获取用户信息;
     console.log(res)
-    UserInfoStore.setUserInfo(res.data)//设置用户信息
-    console.log(UserInfoStore.userinfo)
-    UserInfoStore.setState({isLogin: true, isAdmin: (res.data.role == 'ADMIN' )?true:false})//设置登录状态
-
+    UserInfoStore.setUserInfo(res)//设置用户信息
+    console.log('userinfo',UserInfoStore.userinfo)
+    UserInfoStore.setState({isLogin: true, isAdmin: (res.role == 'ADMIN' )?true:false})//设置登录状态
+    token.setToken(res.token)//根据后台设置token
+    console.log("登录后token:",token.getToken())
     ElMessage.success("登录成功")
 
 
@@ -138,11 +139,11 @@ const login = async () =>{
 //清空表单
 const clearForm = () => {
     registerData.value = {
-        username: '',
-        password: '',
-        rePassword: '',
-        email: '',
-        status: 'user'
+    username: '123456789',
+    password: '12345678',
+    rePassword: '12345678',
+    email: 'test@email.com',
+    role: 'user'
     }
 }
 </script>
