@@ -126,7 +126,8 @@
   // import { useUserInfoStore } from '@/stores/userInfo'
   import { useRoute } from 'vue-router';
   import { Search } from '@element-plus/icons-vue'
-  import blogCard from '../Blog/components/blogCard.vue'
+  // import blogCard from '../Blog/components/blogCard.vue'
+  import blogCard from '../Blog/components/BlogDetial.vue'
   import Header from './profileHeader.vue'
   import { useUserInfoStore } from '@/stores/userInfo'
   import type { userInfo } from '@/lib/types';

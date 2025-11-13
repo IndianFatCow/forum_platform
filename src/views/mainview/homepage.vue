@@ -17,17 +17,39 @@ import {
 
 
 import { useUserInfoStore } from '@/stores/userInfo';
+import { getUserLevel} from '@/api/user';
 // //头像条目点击后的处理
 import { useRouter } from 'vue-router'
 import { computed } from 'vue';
+// import { useUserInfoStore } from '@/stores/userInfo'//用户信息存储
 const router = useRouter();
-// const authStore = useAuthStore();
+
 // const tokenStore = useTokenStore()
 const profilePath = computed(() => `/profile/${useUserInfoStore().userinfo.username}`);
 import miniCenter from './userCenter/miniCenter.vue';
+import NotificationCenter from './compoment/NotificationCenter.vue';
 
 
+// 新增等级相关的响应式变量
+const userLevel = ref(useUserInfoStore().userinfo.level);
+const loadingLevel = ref(true);
 
+// 在页面挂载时获取用户等级
+// onMounted(async () => {
+//   try {
+//     loadingLevel.value = true;
+//     const response = await getUserLevel();
+//     console.log('wd wd wd',response);
+//     // 假设接口返回格式为 { data: { level: 'Lv.3' } }，根据实际接口调整
+//     userLevel.value = response || '未获取';
+//     console.log('用户等级:', userLevel.value);
+//   } catch (error) {
+//     console.error('获取用户等级失败:', error);
+//     userLevel.value = '获取失败';
+//   } finally {
+//     loadingLevel.value = false;
+//   }
+// });
 
 const searchText = ref('');
 const searchType = ref('users'); // 注意这里默认值，但switch里没有处理，建议统一
@@ -61,29 +83,7 @@ const handleSearch = () => {
 
   }
 };
-// const searchType = ref('problems'); // 默认搜索类型为用户
-// const handleSearch = () => {
-//   if (searchText.value.trim() === '') {
-//     ElMessage({
-//       message: '请输入搜索内容',
-//       type: 'warning',
-//     });
-//     return;
-//   }
-  
-//   // 跳转到搜索结果页面
-//   switch (searchType.value) {
-//     case 'users':
-//       router.push(`/users?search=${encodeURIComponent(searchText.value)}`)
-//       break;
-//     case 'blogs':
-//       router.push(`/blogs?search=${encodeURIComponent(searchText.value)}`)
-//       break;
-//     case 'boards':
-//       router.push(`/boards?search=${encodeURIComponent(searchText.value)}`)
-//       break;
-//   }
-// };
+
 
 </script>
 <template>
@@ -96,6 +96,7 @@ const handleSearch = () => {
           <el-menu-item index="/home">首页</el-menu-item>
           <el-menu-item :index=profilePath>个人主页</el-menu-item>
           <el-menu-item index="/users">用户列表</el-menu-item>
+          <el-menu-item index="/boards">板块列表</el-menu-item>
           <!-- <el-menu-item index="/visual-algo">Visual-algo</el-menu-item> -->
         </el-menu>
       </div>
@@ -124,6 +125,9 @@ const handleSearch = () => {
         </div>
 
       <div class="nav-right">
+        <div class="user-level">
+          <span class="level-label">等级: {{ userLevel }}</span>
+        </div><NotificationCenter/>
           <miniCenter/>
       </div>
     </el-header>
@@ -137,6 +141,12 @@ const handleSearch = () => {
 </template>
 
 <style scoped>
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* 元素之间的间距 */
+}
+
 .layout {
   height: 100vh;
   display: flex;
@@ -156,7 +166,14 @@ const handleSearch = () => {
   display: flex;
   align-items: center;
 }
-
+  
+.user-level {
+  color: #409eff; /* 蓝色调，与element-plus风格一致 */
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #f0f7ff;
+}
 
  /* 居中搜索栏 */
 .nav-center {

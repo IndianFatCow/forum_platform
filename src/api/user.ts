@@ -114,10 +114,9 @@ export const userInfoService = (userid:number)=>{
 export const userListService = (keyword?: string) => {
     console.log("js keyword", keyword);
 
-    const params: { keyword?: string } = {};
-    if (keyword && keyword.trim() !== '') {
-        params.keyword = keyword.trim();
-    }
+    const params = {
+        keyword: keyword?.trim() ?? ''  // undefined → '', 空字符串 → ''
+    };
     console.log("params", params);
     return  request.get('/api/search/users', { params ,    headers: {
         'Cache-Control': 'no-cache',
@@ -125,3 +124,6 @@ export const userListService = (keyword?: string) => {
       }});
 
 };
+export const getUserLevel = () => {
+    return request.get('/api/users/profile/points')
+}

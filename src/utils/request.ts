@@ -72,7 +72,8 @@ instance.interceptors.response.use(
       if (
         data?.success === true ||
         Array.isArray(data) ||
-        (data && typeof data === 'object' && (data.id !== undefined || data.username !== undefined))
+        (data && typeof data === 'object' && (data.id !== undefined || data.username !== undefined)) 
+        // || data !== null && data !== undefined
       ) {
         return data;
       }

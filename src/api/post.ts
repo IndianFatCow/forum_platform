@@ -1,52 +1,73 @@
-// 导入request.js请求工具
+// src/api/post.ts
 import request from '@/utils/request.js';
 
+/**
+ * 1. 发布帖子
+ * POST {{baseUrl}}/api/posts
+ */
+export interface CreatePostParams {
+  userId: string;
+  boardId: number;
+  title: string;
+  content: string;
+  images?: string[];  // 可选图片数组
+}
 
-// 创建新帖子
-export const createPostService = (postData: any) => {
-    return request.post('/post', postData);
+export const createPostService = (data: CreatePostParams) => {
+  return request.post('/api/posts', data);
 };
 
 /**
- * 查询帖子列表
- * @param {number} limit - 返回条目数量限制，默认为10
- * @param {number} offset - 偏移量，默认为0
- * @param {string} title - 帖子标题搜索条件，可选
- * @param {string} content - 帖子内容搜索条件，可选
+ * 2. 获取所有帖子
+ * GET {{baseUrl}}/api/posts
  */
-export const queryPostsService = (limit = 10, offset = 0,author?:string, title?:string, content?:string) => {
-    return request.get('/post', {
-        params: {
-            limit,
-            offset,
-            author: author,
-            title: title,
-            content: content
-        }
-    });
+export const getAllPostsService = () => {
+  return request.get('/api/posts');
 };
 
-//  根据ID获取帖子详情
-
-export const getPostByIdService = (id?:string) => {
-    return request.get(`/post/${id}`);
+/**
+ * 3. 获取特定板块下的所有帖子
+ * GET {{baseUrl}}/api/posts/board/{boardId}
+ * （根据 RESTful 推断 URL）
+ */
+export const getPostsByBoardIdService = (boardId: number) => {
+  return request.get(`/api/posts/board/${boardId}`);
 };
 
-// 更新帖子
-export const updatePostService = (id:number, postData:any) => {
-    return request.put(`/post/${id}`, postData);
+/**
+ * 4. 获取单个帖子详情
+ * GET {{baseUrl}}/api/posts/{id}
+ */
+export const getPostByIdService = (postId: string | number) => {
+  return request.get(`/api/posts/${postId}`);
 };
 
-// 删除帖子
-export const deletePostService = (id:number) => {
-    return request.delete(`/post/${id}`);
+/**
+ * 5. 删除帖子
+ * DELETE {{baseUrl}}/api/posts/{id}
+ */
+export const deletePostService = (postId: string | number) => {
+  return request.delete(`/api/posts/${postId}`);
 };
-//上传图片
-export const uploadImageService = (file:File,postId?:number) => {
-    return request.post(`/post/${{postId}}/image`, file, {
-        headers: {
-            'Content-Type': 'image/png',
-          }
-          
-    });
+
+/**
+ * 6. 编辑帖子
+ * PUT {{baseUrl}}/api/posts/{id}
+ */
+export interface UpdatePostParams {
+  title?: string;
+  content?: string;
+  images?: string[];
+  boardId?: number;
+}
+
+export const updatePostService = (postId: string | number, data: UpdatePostParams) => {
+  return request.put(`/api/posts/${postId}`, data);
 };
+export const queryPostsService = (query: string) => {
+//   return request.get(`/api/posts/search`, { params: { q: query } });
+    return;
+}
+export const uploadImageService = (data: FormData) => {
+    return request.post('/api/posts/uploadImage', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+}

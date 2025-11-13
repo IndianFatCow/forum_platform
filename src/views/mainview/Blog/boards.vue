@@ -170,7 +170,8 @@
     loading.value = true;
     try {
       const response = await getBoardListService();
-      boardList.value = response.data || [];
+      console.log('res',response);
+      boardList.value = response || [];
     } catch (error: any) {
       ElMessage.error(error.message || '加载板块列表失败');
     } finally {
@@ -180,7 +181,7 @@
   
   // 导航到板块详情
   const navigateToBoard = (boardId: string) => {
-    router.push(`/home/${boardId}`);
+    router.push(`/boards/${boardId}`);
   };
   
   // 编辑板块

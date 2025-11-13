@@ -1,43 +1,32 @@
-// 导入request.js请求工具
+// src/api/comment.ts
 import request from '@/utils/request.js';
 
 /**
- * 创建新评论
- *  包含内容(content)、作者(author)、引用ID(refer_id)、引用类型(refer_type)、来源ID(source_id)和来源类型(source_type)等信息的对象
+ * 1. 评论帖子
+ * POST {{baseUrl}}/api/comments
  */
-export const createCommentService = (commentData: any) => {
-    return request.post(`/post/${commentData.source_id}/comment`, commentData);
-};
+export interface CreateCommentParams {
+  userId: number;
+  postId: number;
+  content: string;
+}
 
-// 查询文章评论列表
-export const getCommentsService = (post_Id?:string,limit = 10, offset = 0) => {
-    // 构建请求参数对象
-    const params = {
-        limit,
-        offset,
-    };
-
-    return request.get(`/post/${post_Id}/comment`, { params });
-};
-
-// 查询评论的评论
-export const getCommentByIdService = (postInstanceId:string,commentInstanceId:string) => {
-    return request.get(`/post/${postInstanceId}/comment/${commentInstanceId}`);
+export const createCommentService = (data: CreateCommentParams) => {
+  return request.post('/api/comments', data);
 };
 
 /**
- * 更新评论
- * @param {number} commentInstanceId - 评论实例ID
- * @param {Object} commentData - 包含要更新的信息的对象，如内容(content)
+ * 2. 点赞评论
+ * POST {{baseUrl}}/api/comments/{commentId}/like
  */
-export const updateCommentService = (commentInstanceId:number, commentData:any) => {
-    return request.put(`/comment/${commentInstanceId}`, commentData);
+export const likeCommentService = (commentId: number | string) => {
+  return request.post(`/api/comments/${commentId}/like`, { type: 'like' });
 };
 
 /**
- * 删除评论
- * @param {number} commentInstanceId - 要删除的评论实例ID
+ * 3. 点踩评论
+ * POST {{baseUrl}}/api/comments/{commentId}/dislike
  */
-export const deleteCommentService = (postInstanceId:BigInt,commentInstanceId:string) => {
-    return request.delete(`/post/${postInstanceId}/comment/${commentInstanceId}`);
+export const dislikeCommentService = (commentId: number | string) => {
+  return request.post(`/api/comments/${commentId}/dislike`);
 };

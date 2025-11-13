@@ -125,7 +125,7 @@ const handleSearch = () => {
   })
   
   // 执行搜索
-  fetchUserList(searchKeyword.value || undefined)
+  fetchUserList(searchKeyword.value || "")
 }
 
 // 查看用户详情

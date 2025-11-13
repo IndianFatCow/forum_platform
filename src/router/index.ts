@@ -15,10 +15,10 @@ import userManage from '@/views/mainview/userProfile/userList.vue'
 //uesr页面和子页面
 import showVue from '@/views/mainview/compoment/show.vue'//项目展示
 import userpage from '@/views/mainview/homepage.vue'
-
 import profile from '@/views/mainview/userProfile/profile.vue'//个人中心
 import qa from '@/views/admin/contentAdmin/show.vue'
 import visualAlgo from '@/views/admin/contentAdmin/show.vue'
+import Messages from '@/views/mainview/compoment/Messages.vue'
 
 //通用页面
 
@@ -33,6 +33,7 @@ import home from '@/views/mainview/Blog/home.vue'//社区首页
 import blogDetail from '@/views/mainview/Blog/components/BlogDetial.vue'//社区详情
 import userList from '@/views/mainview/userProfile/userList.vue'
 import boards from '@/views/mainview/Blog/boards.vue'
+import edit_post from '@/views/mainview/Blog/components/edit_post.vue'
 
 import setupAllRouterGuard from './listen'//监听路由
 //定义路由关系
@@ -55,14 +56,17 @@ const routes = [
         [       
                 {path: '/show', component: showVue},
                 {path: '/boards', component: boards},
+                {path: '/boards/:id', component: home},
                 {path: '/home', component: home},
                 { path: '/blogDetail/:id', component: blogDetail },
+                { path: '/edit_post/:id', component: edit_post },
                 // {path: '/questionDetail/:id', component: questionDetail},
                 // {path: '/profile', component: profile},
                 {path: '/profile/:username', component: profile},
                 {path: '/qa', component: qa},
                 {path: '/visual-algo', component: visualAlgo} ,
-                {path: '/users', component: userList}    
+                {path: '/users', component: userList},    
+                {path: '/messages/:userId', component: Messages}
         ]},
     { path: '/usercenter', component: userCenter,
         children://配置子路由
