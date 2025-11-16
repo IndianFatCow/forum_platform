@@ -110,9 +110,7 @@ const login = async () =>{
     if (!valid) {
         return
     }
-
     AuthStore.$state.user = registerData.value;
-    
     // let restoken = await userLoginService(AuthStore.getAuthHeader(),registerData.value.username,registerData.value.password);
     // console.log(AuthStore.$state)
     // console.log(restoken.data)

@@ -21,49 +21,11 @@ const instance = axios.create({
   });
 //导入router
 import router from '@/router';
-
-// //添加响应拦截器
-// instance.interceptors.response.use(//返回数据后触发
-//     result=>{
-//         if(result.data.success === true  || result.data.username !== undefined || result.data.length >=0){
-//             return result.data;
-//         }
-//         // alert(result.msg?result.msg:'服务异常'+result.msg);
-//         // ElMessage.error(result.response.data.message??'后台服务异常');
-        
-//         return Promise.reject(result.data);//异步的状态转化成失败的状态
-//     },
-//     err=>{
-//         console.log('请求错误:', err);
-//         //判断错误的状态码
-//         if(err.response.success === false){
-//             //
-//             const authStore = useAuthStore()
-//             authStore.clearCredentials() // 清除 Basic Auth 
-//             const tokenStore = useTokenStore()
-//             tokenStore.removeToken() // 清除 token
-
-//             ElMessage.error('认证失败，请重新登录')
-//             //跳转到登录页面
-//             router.push('/login');
-//         }else if(err.response.status === 403){
-//             ElMessage.error('没有权限');
-//         }else if(err.response.status === 301){
-//             ElMessage.error('重定向');
-//             router.push('/login');
-//         }
-//         else{
-//             ElMessage.error('请求失败: '+err.response.data.message);   
-//         }
-//         return Promise.reject(err);//异步的状态转化成失败的状态
-//     }
-// )
 // 添加响应拦截器
 instance.interceptors.response.use(
     // 返回数据后触发
     result => {
       const data = result.data;
-      
       // 判断响应数据是否有效
       // 1. 有 success 字段且为 true
       // 2. 是数组类型（用户列表等）

@@ -5,15 +5,6 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 // import { useNamespace } from 'element-plus';
 
-// // 创建一个避免拦截器的Axios实例用于登录
-const userRequest = axios.create({
-//   baseURL: '/v1', // 根据实际情况调整
-    // baseURL: '',
-    headers: {
-        'Content-Type': 'application/json' ,// ← 这样就全局设置了
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkiLCJ1c2VySWQiOjcsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzYyNDg1MzUyLCJleHAiOjE3NjI1NzE3NTJ9.weCZJpxKdSsKY-6y4EuwAgB5PSvf5Zpx6PPAb8DAVlg'
-      }
-});
 
 // 注册拦截器
 export const userRegisterService = (registerData:any)=>{
@@ -23,6 +14,10 @@ export const userRegisterService = (registerData:any)=>{
 
 //提供调用登录接口的函数
 export const userLoginService = (username:string,password:string)=>{
+        return request.post('/api/auth/login', {
+        username: username,
+        password: password
+    });
     // return request.post('/api/auth/login', {    username: username,
     //     password: password}, {
     //     headers: {
@@ -37,10 +32,7 @@ export const userLoginService = (username:string,password:string)=>{
     //     // console.log("登录失败", error.response.data.message);
     //     ElMessage.error(error.response.data.success);
     // });
-    return request.post('/api/auth/login', {
-        username: username,
-        password: password
-    });
+
     // return userRequest.post('http://localhost:8080/api/auth/login', {
     //     username: username,
     //     password: password
